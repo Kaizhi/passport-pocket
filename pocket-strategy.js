@@ -72,7 +72,8 @@ function Strategy(options, verify) {
     options.requestTokenURL  = options.requestTokenURL || 'https://getpocket.com/v3/oauth/request';
     options.authorizationURL = options.userAuthorizationURL || 'https://getpocket.com/v3/oauth/authorize';
     options.sessionKey       = options.sessionKey || 'oauth:pocket';
-
+    options.passReqToCallback = options.passReqToCallback || false;
+    
     // Api urls
     options.retrive = 'https://getpocket.com/v3/get';
 
@@ -113,8 +114,12 @@ Strategy.prototype.authenticate = function(req, options) {
                     username : username,
                     accessToken : accessToken
                 }
-
-                self._verity(username, accessToken, verified);
+                if (self._options.passReqToCallback){
+                    self._verity(req, username, accessToken, verified);
+                }
+                else{
+                    self._verity(username, accessToken, verified);                    
+                }
             });
         }
     }else{
